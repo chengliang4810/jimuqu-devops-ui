@@ -8,6 +8,7 @@ import { defineOverridesPreferences } from '@vben/preferences';
 export const overridesPreferences = defineOverridesPreferences({
   app: {
     enableCheckUpdates: false,
+    enablePreferences: false,
     name: import.meta.env.VITE_APP_TITLE || "积木区DevOps",
   },
   breadcrumb: {
