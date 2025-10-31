@@ -6,8 +6,28 @@ import { defineOverridesPreferences } from '@vben/preferences';
  * !!! 更改配置后请清空缓存，否则可能不生效
  */
 export const overridesPreferences = defineOverridesPreferences({
-  // overrides
   app: {
+    enableCheckUpdates: false,
     name: import.meta.env.VITE_APP_TITLE || "积木区DevOps",
+  },
+  breadcrumb: {
+    showHome: true,
+  },
+  shortcutKeys: {
+    enable: false,
+  },
+  theme: {
+    builtinType: 'custom',
+    colorPrimary: 'hsl(25 95% 53%)',
+    mode: 'light',
+    radius: '0.75',
+  },
+  widget: {
+    globalSearch: false,
+    languageToggle: false,
+    lockScreen: false,
+    notification: false,
+    themeToggle: false,
+    timezone: false,
   },
 });
