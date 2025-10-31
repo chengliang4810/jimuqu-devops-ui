@@ -5,7 +5,8 @@ export default defineConfig(async () => {
     application: {},
     vite: {
       server: {
-        proxy: {
+        // 开发环境禁用代理，使用mock API
+        proxy: process.env.NODE_ENV === 'development' ? {} : {
           '/api': {
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/api/, ''),
