@@ -5,7 +5,7 @@ import { $t } from '#/locales';
 const routes: RouteRecordRaw[] = [
   {
     meta: {
-      icon: 'ic:baseline-view-in-ar',
+      icon: 'lucide:layout-dashboard',
       keepAlive: true,
       order: 1000,
       title: $t('demos.title'),
@@ -15,11 +15,41 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         meta: {
-          title: $t('demos.antd'),
+          icon: 'lucide:file-text',
+          title: '表单示例',
         },
-        name: 'AntDesignDemos',
-        path: '/demos/ant-design',
-        component: () => import('#/views/demos/antd/index.vue'),
+        name: 'FormDemos',
+        path: '/demos/form',
+        children: [
+          {
+            name: 'FormBasicDemo',
+            path: '/demos/form/basic',
+            component: () => import('#/views/demos/form/basic.vue'),
+            meta: {
+              icon: 'lucide:file-text',
+              title: '基础表单',
+            },
+          },
+        ],
+      },
+      {
+        meta: {
+          icon: 'lucide:table',
+          title: '表格示例',
+        },
+        name: 'TableDemos',
+        path: '/demos/table',
+        children: [
+          {
+            name: 'TableSearchDemo',
+            path: '/demos/table/search',
+            component: () => import('#/views/demos/table/search.vue'),
+            meta: {
+              icon: 'lucide:search',
+              title: '搜索表格',
+            },
+          },
+        ],
       },
     ],
   },

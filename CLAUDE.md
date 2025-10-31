@@ -126,28 +126,188 @@ The main application bootstraps through `apps/web-antd/src/bootstrap.ts`:
 - `.prettierrc.mjs`: Prettier configuration
 - `lefthook.yml`: Git hooks configuration for pre-commit checks
 
-## Development Notes
+## Component Development & Usage
 
-### Mock API Development
-The project previously included a Nitro-based mock server. For development:
-- Mock APIs can be added directly to the request layer in `apps/web-antd/src/api/`
-- The `apps/web-antd/src/api/core/auth.ts` already includes mock login functionality
-- API calls proxy to `http://localhost:5320/api` when mock server is running
+### VbenForm - Advanced Form System
+The project provides a powerful form system built on top of Ant Design Vue:
 
-### Component Development
-- Use @vben/ui-kit components when possible (form-ui, layout-ui, etc.)
-- Follow existing component patterns in `packages/@core/ui-kit/`
-- Leverage the adapter pattern in `apps/web-antd/src/adapter/`
+```typescript
+import { useVbenForm } from '#/adapter/form';
 
-### State Management
-- Use Pinia stores from @vben/stores
-- Access control is handled through @vben/access
-- Preferences are managed through @vben/preferences
+const [BasicForm, formApi] = useVbenForm({
+  schema: [
+    {
+      component: 'Input',
+      fieldName: 'username',
+      label: '用户名',
+      rules: 'required',
+    },
+    {
+      component: 'ApiSelect',
+      componentProps: {
+        api: getAllMenusApi,
+        autoSelect: 'first',
+      },
+      fieldName: 'api',
+      label: 'API选择器',
+    },
+  ],
+  layout: 'horizontal',
+  wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+});
+```
 
-### Routing & Permissions
-- Routes are defined in `apps/web-antd/src/router/routes/modules/`
-- Permission-based routing is configured in `apps/web-antd/src/router/access.ts`
-- Dynamic route generation is supported for menu-based navigation
+**Available Components:**
+- Input, InputPassword, InputNumber, Textarea
+- Select, ApiSelect, TreeSelect, ApiTreeSelect
+- DatePicker, RangePicker, TimePicker
+- Checkbox, CheckboxGroup, Radio, RadioGroup
+- Switch, Rate, Mentions
+- Upload (with custom request handling)
+- IconPicker
+
+### Component Adapter Pattern
+The adapter system allows seamless integration of different UI libraries:
+
+```typescript
+// apps/web-antd/src/adapter/component/index.ts
+export type ComponentType =
+  | 'ApiSelect'
+  | 'ApiTreeSelect'
+  | 'IconPicker'
+  | 'Input'
+  | 'Select'
+  // ... other components
+```
+
+### Page Structure Pattern
+Follow the established page structure:
+
+```vue
+<script setup lang="ts">
+import { Page } from '@vben/common-ui';
+// Component logic
+</script>
+
+<template>
+  <Page title="页面标题" description="页面描述">
+    <!-- Page content -->
+  </Page>
+</template>
+```
+
+### API Development
+Use the request client for consistent API handling:
+
+```typescript
+import { requestClient } from '#/api/request';
+
+export async function getUsers(params: Record<string, any>) {
+  return requestClient.get('/users', { params });
+}
+
+export async function createUser(data: Record<string, any>) {
+  return requestClient.post('/users', data);
+}
+```
+
+### Route Configuration
+Routes are modular and support advanced features:
+
+```typescript
+const routes: RouteRecordRaw[] = [
+  {
+    meta: {
+      icon: 'lucide:layout-dashboard',
+      title: '模块名称',
+      authority: ['admin'], // 权限控制
+      keepAlive: true, // 页面缓存
+    },
+    name: 'ModuleName',
+    path: '/module',
+    children: [
+      {
+        name: 'ChildPage',
+        path: '/module/child',
+        component: () => import('#/views/module/child.vue'),
+        meta: {
+          hideInMenu: true, // 隐藏菜单
+          activePath: '/module', // 激活父级菜单
+        },
+      },
+    ],
+  },
+];
+```
+
+## Development Guidelines
+
+### Component Development Best Practices
+- Use @vben/ui-kit components when available
+- Follow the adapter pattern for new components
+- Implement proper TypeScript typing
+- Include accessibility features (ARIA labels, keyboard navigation)
+- Use composition API with `<script setup>` syntax
+
+### State Management Patterns
+- Use Pinia stores for application state
+- Leverage @vben/access for permission management
+- Store user preferences with @vben/preferences
+- Implement proper error handling and loading states
+
+### Form Development Guidelines
+- Use VbenForm for complex forms
+- Implement proper validation with Zod rules
+- Use API components for dynamic data
+- Follow the established field naming conventions
+- Implement form reset and validation states
+
+### API Integration Patterns
+- Use the centralized request client
+- Implement proper error handling and user feedback
+- Use mock data during development (see backup/playground-examples/)
+- Follow RESTful API conventions
+- Implement proper TypeScript interfaces for API responses
+
+### Code Organization
+- Keep components focused and single-purpose
+- Use composables for reusable logic
+- Separate API calls from UI logic
+- Implement proper error boundaries
+- Use proper TypeScript typing throughout
+
+## Playground Examples Reference
+
+The project includes extensive examples in `backup/playground-examples/` that demonstrate advanced usage patterns:
+
+### Featured Examples
+- **Form Examples**: Complex forms with validation, API integration, and custom components
+- **Table Examples**: Data tables with search, pagination, and inline editing
+- **Access Control**: Role-based permissions and route guards
+- **UI Components**: Advanced component usage and customization
+- **API Integration**: Real-world data fetching and state management
+
+### Using Examples
+1. Reference the backed-up examples when implementing new features
+2. Copy patterns and adapt them for your specific use case
+3. Follow the established coding patterns and conventions
+4. Use the examples as learning resources for advanced features
+
+## Demo Pages in Web-Antd
+
+The main application now includes demo pages showcasing key features:
+
+### Form Demo (`/demos/form/basic`)
+- Basic form implementation with VbenForm
+- Input validation and user feedback
+- Multiple form field types and layouts
+
+### Table Demo (`/demos/table/search`)
+- Search form integration
+- Data table with pagination
+- Basic CRUD operations demonstration
+
+These demos serve as starting points for implementing similar features in your application.
 
 ## Git Configuration
 
